@@ -1,25 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.ServiceModel;
-using System.Text;
-using System.Threading.Tasks;
 using Project2Model;
+using Project2ObjectWCF.DTO;
 
 namespace Project2ObjectWCF
 {
     [ServiceContract]
     interface FileInterface {
         [OperationContract]
-        void AddFile(File file);
+        void AddFile(FileDTO file);
 
         [OperationContract]
         void DeleteFile(string filePath);
 
         [OperationContract]
-        ICollection<File> GetFilesAndMetadata();
+        ICollection<FileDTO> GetFilesAndMetadata();
 
         [OperationContract]
-        ICollection<File> FindFilesByFileName(string name);
+        ICollection<FileDTO> FindFilesByFileName(string name);
     }
 }

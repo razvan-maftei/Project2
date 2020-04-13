@@ -11,9 +11,6 @@ using System.Runtime.Serialization;
 
 namespace Project2Model
 {
-    using System;
-    using System.Collections.Generic;
-    
     [DataContract(IsReference = true)]
     public partial class Metadata
     {
@@ -21,9 +18,6 @@ namespace Project2Model
         public int Id { get; set; }
         [DataMember]
         public System.DateTime CreationDate { get; set; }
-        [DataMember]
-        public string CustomFields { get; set; }
-
         [DataMember]
         public virtual File File { get; set; }
     }

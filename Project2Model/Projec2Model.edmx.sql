@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 03/31/2020 12:29:12
+-- Date Created: 04/13/2020 14:26:25
 -- Generated from EDMX file: C:\Users\raste\source\repos\Project2Model\Projec2Model.edmx
 -- --------------------------------------------------
 
@@ -17,11 +17,26 @@ GO
 -- Dropping existing FOREIGN KEY constraints
 -- --------------------------------------------------
 
+IF OBJECT_ID(N'[dbo].[FK_FileMetadata]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Files] DROP CONSTRAINT [FK_FileMetadata];
+GO
+IF OBJECT_ID(N'[dbo].[FK_FileTag]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Tags] DROP CONSTRAINT [FK_FileTag];
+GO
 
 -- --------------------------------------------------
 -- Dropping existing tables
 -- --------------------------------------------------
 
+IF OBJECT_ID(N'[dbo].[Files]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Files];
+GO
+IF OBJECT_ID(N'[dbo].[Metadatas]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Metadatas];
+GO
+IF OBJECT_ID(N'[dbo].[Tags]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Tags];
+GO
 
 -- --------------------------------------------------
 -- Creating all tables
@@ -39,8 +54,16 @@ GO
 -- Creating table 'Metadatas'
 CREATE TABLE [dbo].[Metadatas] (
     [Id] int IDENTITY(1,1) NOT NULL,
-    [CreationDate] datetime  NOT NULL,
-    [CustomFields] nvarchar(max)  NOT NULL
+    [CreationDate] datetime  NOT NULL
+);
+GO
+
+-- Creating table 'Tags'
+CREATE TABLE [dbo].[Tags] (
+    [Id] int IDENTITY(1,1) NOT NULL,
+    [Key] nvarchar(max)  NOT NULL,
+    [Value] nvarchar(max)  NOT NULL,
+    [FileId] int  NOT NULL
 );
 GO
 
@@ -57,6 +80,12 @@ GO
 -- Creating primary key on [Id] in table 'Metadatas'
 ALTER TABLE [dbo].[Metadatas]
 ADD CONSTRAINT [PK_Metadatas]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
+-- Creating primary key on [Id] in table 'Tags'
+ALTER TABLE [dbo].[Tags]
+ADD CONSTRAINT [PK_Tags]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
@@ -77,6 +106,21 @@ GO
 CREATE INDEX [IX_FK_FileMetadata]
 ON [dbo].[Files]
     ([Metadata_Id]);
+GO
+
+-- Creating foreign key on [FileId] in table 'Tags'
+ALTER TABLE [dbo].[Tags]
+ADD CONSTRAINT [FK_FileTag]
+    FOREIGN KEY ([FileId])
+    REFERENCES [dbo].[Files]
+        ([Id])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_FileTag'
+CREATE INDEX [IX_FK_FileTag]
+ON [dbo].[Tags]
+    ([FileId]);
 GO
 
 -- --------------------------------------------------

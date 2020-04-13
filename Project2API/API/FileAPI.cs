@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
 using System.Linq;
@@ -6,39 +7,27 @@ using System.Text;
 using System.Threading.Tasks;
 using Project2Model;
 using System.Data.Entity;
+using System.Data.Entity.Migrations;
 
-namespace Project2API.API
-{
-    public static class FileAPI
-    {
-
+namespace Project2API.API {
+    public static class FileAPI {
         public static void AddFile(File file)
         {
             using (var context = new Project2Container())
             {
-                var files = context.Files;
-                if (!files.Any(f => f.Path == file.Path))
-                {
-                    files.Add(file);
-                    try
-                    {
-                        context.SaveChanges();
-                    }
-                    catch (DbEntityValidationException e)
-                    {
-                        throw;
-                    }
-
-
-                }
+                context.Files.AddOrUpdate(file);
+                Boolean AlreadyExists = false;
+                if (!context.Files.ToList().Exists(f => f.Path == file.Path))
+                    context.Entry(file).State = (AlreadyExists ? EntityState.Modified : EntityState.Added);
+                context.SaveChanges();
             }
         }
 
-        public static List<File> GetFilesAndMetadata()
+        public static ICollection GetFilesAndMetadata()
         {
             using (var context = new Project2Container())
             {
-                return context.Files.Include(f => f.Metadata).ToList();
+                return context.Files.Include(f => f.Metadata).Include(f => f.Tags).ToList();
             }
         }
 
@@ -46,22 +35,23 @@ namespace Project2API.API
         {
             using (var context = new Project2Container())
             {
-                var fileToUpdate = context.Files.SingleOrDefault(f => f.Path == path);
-                if (fileToUpdate != null)
+                var filesToUpdate = context.Files.Where(f => f.Path == path);
+                foreach (var file in filesToUpdate)
                 {
-                    fileToUpdate.IsDeleted = true;
-                    context.SaveChanges();
+                    file.IsDeleted = true;
                 }
 
+                context.SaveChanges();
             }
         }
 
-        public static List<File> FindByFileName(string name)
+        public static ICollection FindByFileName(string name)
         {
             using (var context = new Project2Container())
             {
                 List<File> fileList = new List<File>();
-                fileList.AddRange(context.Files.Include(f => f.Metadata).Where(f => f.Path.ToLower().Contains(name.ToLower())));
+                fileList.AddRange(context.Files.Include(f => f.Metadata).Include(f => f.Tags)
+                    .Where(f => f.Path.ToLower().Contains(name.ToLower())));
                 return fileList;
             }
         }

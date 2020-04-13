@@ -31,9 +31,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=9.0.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\Project2API\packages\AutoMapper.9.0.0\lib\net461\AutoMapper.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.IdentityModel" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceModel.Primitives, Version=4.7.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\Project2Model\packages\System.ServiceModel.Primitives.4.7.0\lib\net461\System.ServiceModel.Primitives.dll</HintPath>
@@ -47,10 +51,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />
-    <Compile Include="FileInterface.cs" />
-    <Compile Include="FileMetadata.cs" />
-    <Compile Include="IFileMetadata.cs" />
-    <Compile Include="MetadataInterface.cs" />
+    <Compile Include="DTO\FileDTO.cs" />
+    <Compile Include="DTO\MetadataDTO.cs" />
+    <Compile Include="DTO\TagDTO.cs" />
+    <Compile Include="Interfaces\FileInterface.cs" />
+    <Compile Include="Interfaces\FileService.cs" />
+    <Compile Include="Interfaces\IFileMetadataTag.cs" />
+    <Compile Include="Interfaces\MetadataInterface.cs" />
+    <Compile Include="Interfaces\TagInterface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -66,5 +74,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

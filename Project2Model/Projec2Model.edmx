@@ -8,9 +8,14 @@
   <EntityContainer Name="project2ModelStoreContainer">
     <EntitySet Name="Files" EntityType="project2Model.Store.Files" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Metadatas" EntityType="project2Model.Store.Metadatas" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Tags" EntityType="project2Model.Store.Tags" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="FileMetadata" Association="project2Model.Store.FileMetadata">
       <End Role="File" EntitySet="Files" />
       <End Role="Metadata" EntitySet="Metadatas" />
+    </AssociationSet>
+    <AssociationSet Name="FileTag" Association="project2Model.Store.FileTag">
+      <End Role="File" EntitySet="Files" />
+      <End Role="Tag" EntitySet="Tags" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="Files">
@@ -28,7 +33,15 @@
     </Key>
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="CreationDate" Type="datetime" Nullable="false" />
-    <Property Name="CustomFields" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Tags">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Key" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Value" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="FileId" Type="int" Nullable="false" />
   </EntityType>
   <Association Name="FileMetadata">
     <End Role="File" Type="project2Model.Store.Files" Multiplicity="*" />
@@ -39,6 +52,18 @@
       </Principal>
       <Dependent Role="File">
         <PropertyRef Name="Metadata_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FileTag">
+    <End Role="File" Type="project2Model.Store.Files" Multiplicity="1" />
+    <End Role="Tag" Type="project2Model.Store.Tags" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="File">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Tag">
+        <PropertyRef Name="FileId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -53,6 +78,11 @@
             <End Role="File" EntitySet="Files" />
             <End Role="Metadata" EntitySet="Metadatas" />
           </AssociationSet>
+          <EntitySet Name="Tags" EntityType="project2Model.Tag" />
+          <AssociationSet Name="FileTag" Association="project2Model.FileTag">
+            <End Role="File" EntitySet="Files" />
+            <End Role="Tag" EntitySet="Tags" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="File">
           <Key>
@@ -62,6 +92,7 @@
           <Property Name="Path" Type="String" Nullable="false" />
           <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="Metadata" Relationship="project2Model.FileMetadata" FromRole="File" ToRole="Metadata" />
+          <NavigationProperty Name="Tags" Relationship="project2Model.FileTag" FromRole="File" ToRole="Tag" />
         </EntityType>
         <EntityType Name="Metadata">
           <Key>
@@ -69,12 +100,33 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="CreationDate" Type="DateTime" Nullable="false" />
-          <Property Name="CustomFields" Type="String" Nullable="false" />
           <NavigationProperty Name="File" Relationship="project2Model.FileMetadata" FromRole="Metadata" ToRole="File" />
         </EntityType>
         <Association Name="FileMetadata">
           <End Type="project2Model.File" Role="File" Multiplicity="1" />
           <End Type="project2Model.Metadata" Role="Metadata" Multiplicity="1" />
+        </Association>
+        <EntityType Name="Tag">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Key" Type="String" Nullable="false" />
+          <Property Name="Value" Type="String" Nullable="false" />
+          <NavigationProperty Name="File" Relationship="project2Model.FileTag" FromRole="Tag" ToRole="File" />
+          <Property Name="FileId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <Association Name="FileTag">
+          <End Type="project2Model.File" Role="File" Multiplicity="1" />
+          <End Type="project2Model.Tag" Role="Tag" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="File">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Tag">
+              <PropertyRef Name="FileId" />
+            </Dependent>
+          </ReferentialConstraint>
         </Association>
       </Schema>
     </edmx:ConceptualModels>
@@ -96,7 +148,16 @@
         <MappingFragment StoreEntitySet="Metadatas">
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
-          <ScalarProperty Name="CustomFields" ColumnName="CustomFields" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Tags">
+      <EntityTypeMapping TypeName="IsTypeOf(project2Model.Tag)">
+        <MappingFragment StoreEntitySet="Tags">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Key" ColumnName="Key" />
+          <ScalarProperty Name="Value" ColumnName="Value" />
+          <ScalarProperty Name="FileId" ColumnName="FileId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

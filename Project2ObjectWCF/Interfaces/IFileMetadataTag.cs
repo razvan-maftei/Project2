@@ -4,11 +4,12 @@ using System.Linq;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
+using Project2ObjectWCF.Interfaces;
 
 namespace Project2ObjectWCF
 {
     [ServiceContract]
-    interface IFileMetadata : FileInterface, MetadataInterface
+    interface IFileMetadataTag : FileInterface, IMetadataInterface, TagInterface
     {
     }
 }

@@ -27,5 +27,6 @@ namespace Project2Model
     
         public virtual DbSet<File> Files { get; set; }
         public virtual DbSet<Metadata> Metadatas { get; set; }
+        public virtual DbSet<Tag> Tags { get; set; }
     }
 }
